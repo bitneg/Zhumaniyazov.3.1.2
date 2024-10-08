@@ -51,7 +51,7 @@ public class AdminController {
     public String create(Model model, @ModelAttribute("user") User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            model.addAttribute("roles", roleService.getAllRoles()); // Сохраняем роли
+            model.addAttribute("roles", roleService.getAllRoles());
             return "admin/new";
         }
         userService.saveUser(user);
