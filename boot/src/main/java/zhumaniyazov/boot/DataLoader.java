@@ -24,7 +24,6 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
 
-            // Проверяем, существует ли роль
             Role userRole = roleService.findByName("ROLE_USER");
             if (userRole == null) {
                 userRole = new Role("ROLE_USER");
@@ -32,8 +31,7 @@ public class DataLoader implements CommandLineRunner {
             }
 
 
-            // Проверяем, существует ли пользователь
-
+    
             List<Role> roles = new ArrayList<>();
             roles.add(userRole);
 
