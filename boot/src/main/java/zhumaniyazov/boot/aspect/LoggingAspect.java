@@ -18,7 +18,6 @@ public class LoggingAspect {
     @Before("execution(* zhumaniyazov.boot..*(..))")
     public void logBefore(JoinPoint joinPoint) {
         logger.info("Вызов метода: {}", joinPoint.getSignature().getName());
-
     }
 
     @After("execution(* zhumaniyazov.boot..*(..))")
