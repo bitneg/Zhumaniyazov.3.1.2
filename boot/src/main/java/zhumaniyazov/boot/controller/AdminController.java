@@ -1,9 +1,11 @@
 package zhumaniyazov.boot.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import zhumaniyazov.boot.exception.UserNotFoundException;
 import zhumaniyazov.boot.model.User;
 import zhumaniyazov.boot.service.RoleService;
 import zhumaniyazov.boot.service.UserService;
@@ -27,31 +29,30 @@ public class AdminController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") long id, Model model) {
-        model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("users", userService.getAllUsers());
+        User user = userService.getUserById(id);
+        if (user == null) {
+            throw new UserNotFoundException("Пользователь с ID " + id + " не найден");
+        }
+        model.addAttribute("user", user);
         return "admin/show";
     }
 
     @GetMapping()
     public String index(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
         return "admin/index";
-
     }
+
 
     @GetMapping("/new")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("roles", roleService.getAllRoles());
         return "admin/new";
-
     }
 
     @PostMapping
-    public String create(Model model, @ModelAttribute("user") User user, BindingResult bindingResult) {
+    public String create(Model model, @ModelAttribute("user")@Valid User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            model.addAttribute("roles", roleService.getAllRoles()); // Сохраняем роли
             return "admin/new";
         }
         userService.saveUser(user);
@@ -63,17 +64,14 @@ public class AdminController {
     public String edit(Model model, @PathVariable("id") long id) {
         User user = userService.getUserById(id);
         if (user == null) {
-            return "redirect:/admin";
+            throw new UserNotFoundException("Пользователь с ID " + id + " не найден");
         }
-
         model.addAttribute("user", user);
-        model.addAttribute("roles", roleService.getAllRoles());
         return "admin/edit";
     }
 
-
     @PatchMapping("/{id}")
-    public String updateUser(@PathVariable("id") Long id, @ModelAttribute User user) {
+    public String updateUser(@PathVariable("id") Long id, @ModelAttribute @Valid User user) {
         userService.updateUser(id, user);
         return "redirect:/admin";
     }

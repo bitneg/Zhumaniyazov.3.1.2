@@ -1,8 +1,7 @@
 package zhumaniyazov.boot.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,14 +28,24 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Имя пользователя не может быть пустым")
     private String username;
+
+    @NotBlank(message = "Имя не может быть пустым")
     private String firstname;
+
+    @NotBlank(message = "Фамилия не может быть пустой")
     private String lastname;
+
+    @Email(message = "Некорректный формат email")
     private String email;
+
+    @Min(value = 0, message = "Возраст должен быть не менее 0")
+    @Max(value = 120, message = "Возраст не должен превышать 120")
     private long age;
 
+    @Size(min = 6, message = "Пароль должен содержать не менее 6 символов")
     private String password;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",

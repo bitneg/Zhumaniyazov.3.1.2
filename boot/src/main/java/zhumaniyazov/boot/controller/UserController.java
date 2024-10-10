@@ -23,11 +23,7 @@ private final RoleService roleService;
     @GetMapping()
     public String show(Model model) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        model.addAttribute("user",user);
-        model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("roles", roleService.getAllRoles());
-
+        model.addAttribute("user", user);
         return "user/show";
     }
 }
